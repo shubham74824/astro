@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     res.send('Hello, World!'); // Respond with a simple message
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8081;
 
 app.use(express.json())
 app.use(astroRoutes)
