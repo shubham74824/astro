@@ -3,6 +3,7 @@ import express from "express";
 
 const astroRoutes = express.Router();
 astroRoutes.get("/astro_profile",(req, res) => {
+    
     const astrologerData = {
         fullName: "John Doe",
         number: "+1234567890",

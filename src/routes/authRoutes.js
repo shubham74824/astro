@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 const authRoutes = express.Router();
 
-const secretKey = "your_secret_key";
+const secretKey ="123abc$%4d9Ef!@#hijKL6789MN0pQRstuvWXYZ";
 
 authRoutes.post('/send_otp', async (req, res) => {
     const { number } = req.body;
@@ -36,11 +36,17 @@ authRoutes.post('/send_otp', async (req, res) => {
     const otp = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const newUser = new User({ number, otp, otpCreatedAt: new Date() });
     await newUser.save();
+ // Send OTP using Fast2SMS
+ const message = `Your OTP is ${otp}. Please do not share it with anyone.`;
+ const smsResponse = await sendOTP(number, message);
 
-    // (Optional) Send OTP via email/SMS (mocked here)
-    console.log(`OTP sent to ${number}: ${otp}`);
+ if (!smsResponse || smsResponse.return !== true) {
+   return res.status(500).json({ message: "Failed to send OTP" });
+ }
 
-    res.json({ message: "OTP sent successfully" });
+ console.log(`OTP sent to ${number}: ${otp}`);
+ return res.json({ message: "OTP sent successfully" });
+
 });
 
 
@@ -113,10 +119,15 @@ authRoutes.post('/register_astro', async (req, res) => {
 
     await newAstro.save();
 
-    // (Optional) Send OTP via email/SMS (mocked here)
+    const message = `Your OTP is ${otp}. Please do not share it with anyone.`;
+    const smsResponse = await sendOTP(number, message);
+   
+    if (!smsResponse || smsResponse.return !== true) {
+      return res.status(500).json({ message: "Failed to send OTP" });
+    }
+   
     console.log(`OTP sent to ${number}: ${otp}`);
-
-    res.json({ message: "OTP sent successfully" });
+    return res.json({ message: "OTP sent successfully" });
 });
 
 export default authRoutes;
