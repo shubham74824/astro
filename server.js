@@ -1,12 +1,13 @@
 import express from 'express';
 
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
+import cors from 'cors'
 import router from "./src/routes/commonRoutes.js";
 import astroRoutes from "./src/routes/astroRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
 const app = express(); // Initialize Express app
+app.use("*",cors)
 
 app.get('/', (req, res) => {
     res.send('Hello, World!'); // Respond with a simple message
