@@ -1,23 +1,58 @@
 import express from "express";
-import Astro from "../models/AstroEntity.js";
-
+import astrologerAuth from "../middleware/astroAuth.js";
+import Astro from "../models/AstroEntity.js"
 const astroRoutes = express.Router();
-astroRoutes.get("/astro_profile", (req, res) => {
-  const astrologerData = {
-    fullName: "John Doe",
-    number: "+1234567890",
-    gender: "Male",
-    email: "john.doe@example.com",
-    experience: "5 years",
-    city: "New York",
-    shortBio:
-      "Experienced astrologer specializing in horoscope and birth chart readings.",
-    id: "astro123",
-    profile:
-      "https://images.pexels.com/photos/29879483/pexels-photo-29879483/free-photo-of-festive-christmas-ornament-on-pine-tree-branch.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load", // Image URL
-  };
-  return res.json(astrologerData);
+// astro profile
+astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
+
+
+  const { id } = req.authData; // Accessing the userId attached in the middleware
+   
+  try {
+    // Find astrologer by ID and exclude OTP fields
+    const astrologer = await Astro.findById({_id:id})
+  
+    if (!astrologer) {
+      return res.status(404).json({ message: "Astrologer not found" });
+    }
+
+    // Send astrologer details
+    res.status(200).json({ success: true, data: astrologer });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
+
+// astro update 
+astroRoutes.post("/astro_update", astrologerAuth, async (req, res) => {
+
+    const { id } = req.authData;
+
+    const updates = req.body;
+  
+    try {
+      // Find the astrologer by ID and update their details
+      const updatedAstro = await Astro.findByIdAndUpdate(
+        id,
+        { $set: updates },
+        { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
+      );
+  
+      if (!updatedAstro) {
+        return res.status(404).json({ message: "Astrologer not found" });
+      }
+  
+      res.json({
+        message: "Astrologer details updated successfully",
+        updatedAstro,
+      });
+    } catch (error) {
+      console.error("Error updating astrologer details:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+//   get astro
 astroRoutes.get("/astro", async (req, res) => {
   const dummyDashboardData = {
     name: "John Doe",
@@ -30,23 +65,7 @@ astroRoutes.get("/astro", async (req, res) => {
     id: "1",
   };
 
-  try {
-    const astrologers = await Astro.find();
-
-    // Send the astrologers list as a response
-    res.status(200).json({
-      success: true,
-      message: "Astrologers fetched successfully",
-      data: astrologers,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An error occurred while fetching astrologers",
-      error: error.message,
-    });
-  }
-  // return res.json(dummyDashboardData);
+  return res.json(dummyDashboardData);
 });
 astroRoutes.get("/call_astro", (req, res) => {
   const dummyCallData = [

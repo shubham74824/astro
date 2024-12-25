@@ -17,6 +17,10 @@ authRoutes.post('/send_otp', async (req, res) => {
     // Check if the number exists in User or Astro collections
     const user = await User.findOne({ number }).exec();
     const astro = await Astro.findOne({ number }).exec();
+    
+    if (user || astro) {
+        return res.status(409).json({ message: "Number already exists in the system" });
+    }
 
     if (user || astro) {
         // If number exists, update OTP in the respective document
@@ -36,9 +40,12 @@ authRoutes.post('/send_otp', async (req, res) => {
     const otp = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const newUser = new User({ number, otp, otpCreatedAt: new Date() });
     await newUser.save();
+
  // Send OTP using Fast2SMS
  const message = `Your OTP is ${otp}. Please do not share it with anyone.`;
+
  const smsResponse = await sendOTP(number, message);
+
 
  if (!smsResponse || smsResponse.return !== true) {
    return res.status(500).json({ message: "Failed to send OTP" });
