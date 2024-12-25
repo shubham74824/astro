@@ -1,10 +1,10 @@
 import express from "express";
 import UserAuth from "../middleware/userAuth.js";
-import Astro from "../models/AstroEntity.js"
+import Astro from "../models/AstroEntity.js";
 import User from "../models/UserEntity.js";
 const userRoutes = express.Router();
-import axios from 'axios'
-import {getLatLong} from "../utils/getLatLong.js"
+import axios from "axios";
+import { getLatLong } from "../utils/getLatLong.js";
 
 const Username = "635294";
 const Password = "034da42232b5b34a57b7e6e27e031473622744d4";
@@ -50,33 +50,33 @@ userRoutes.get("/my_profile", (req, res) => {
 });
 
 userRoutes.get("/all_astro", async (req, res) => {
-    try {
-        const getResponse = await Astro.find();
-    
-        // Check if getResponse is empty
-        if (!getResponse || getResponse.length === 0) {
-          return res.json({ data: [] });
-        }
-    
-        // Map over the array of astrologers and transform each one
-        const transformedResponse = getResponse.map((astro) => ({
-          id: astro._id.toString(), // Convert ObjectId to string if necessary
-          name: astro.fullName,
-          imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
-          specialties: astro.specialties.length ? astro.specialties : [], // Default to empty array if no specialties
-          languages: astro.languages.length ? astro.languages : [], // Default to empty array if no languages
-          experience: parseInt(astro.experience), // Convert experience to number
-          pricePerMin: parseInt(astro.pricePerMin) || 10, // Set default price if it's not present
-          followers: parseInt(astro.followers) || 0, // Set default followers if it's not present
-          isVerified: astro.isVerified,
-        }));
-    
-        // Send the transformed data back as an array
-        return res.status(200).json(transformedResponse);
-      } catch (error) {
-        console.error("Error:", error); // Log the error for debugging
-        res.status(500).json({ message: "Internal server error" });
-      }
+  try {
+    const getResponse = await Astro.find();
+
+    // Check if getResponse is empty
+    if (!getResponse || getResponse.length === 0) {
+      return res.json({ data: [] });
+    }
+
+    // Map over the array of astrologers and transform each one
+    const transformedResponse = getResponse.map((astro) => ({
+      id: astro._id.toString(), // Convert ObjectId to string if necessary
+      name: astro.fullName,
+      imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
+      specialties: astro.specialties.length ? astro.specialties : [], // Default to empty array if no specialties
+      languages: astro.languages.length ? astro.languages : [], // Default to empty array if no languages
+      experience: astro.experience||0 , // Convert experience to number
+      pricePerMin: parseInt(astro.pricePerMin) || 10, // Set default price if it's not present
+      followers: parseInt(astro.followers) || 0, // Set default followers if it's not present
+      isVerified: astro.isVerified,
+    }));
+
+    // Send the transformed data back as an array
+    return res.status(200).json(transformedResponse);
+  } catch (error) {
+    console.error("Error:", error); // Log the error for debugging
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 userRoutes.get("/single_astro/:id", async (req, res) => {
   try {
@@ -98,9 +98,9 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
         ? getResponse.specialties
         : [],
       languages: getResponse.languages.length ? getResponse.languages : [],
-      experience: parseInt(getResponse.experience),
-      pricePerMin: parseInt(getResponse.pricePerMin),
-      followers: parseInt(getResponse.followers),
+      experience: astro.experience||0,
+      pricePerMin: parseInt(getResponse.pricePerMin)||0,
+      followers: parseInt(getResponse.followers)||0,
       isVerified: getResponse.isVerified,
     };
 
@@ -141,55 +141,53 @@ userRoutes.get("/home_user", (req, res) => {
 
 //  user profole
 userRoutes.get("/user_profile", UserAuth, async (req, res) => {
-    const { id } = req.authData; // Accessing the userId attached in the middleware
-  
-    try {
-      // Find astrologer by ID and exclude OTP fields
-      const astrologer = await User.findById({ _id: id });
-  
-      if (!astrologer) {
-        return res.status(404).json({ message: "Astrologer not found" });
-      }
-  
-      // Send astrologer details
-      res.status(200).json({ success: true, data: astrologer });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+  const { id } = req.authData; // Accessing the userId attached in the middleware
+
+  try {
+    // Find astrologer by ID and exclude OTP fields
+    const astrologer = await User.findById({ _id: id });
+
+    if (!astrologer) {
+      return res.status(404).json({ message: "Astrologer not found" });
     }
-  }); 
+
+    // Send astrologer details
+    res.status(200).json({ success: true, data: astrologer });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 //   update profile
 
 userRoutes.post("/user_update", UserAuth, async (req, res) => {
-    const { id } = req.authData;
-  
-    const updates = req.body;
-  
-    try {
-      // Find the astrologer by ID and update their details
-      const updatedAstro = await User.findByIdAndUpdate(
-        id,
-        { $set: updates },
-        { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
-      );
-  
-      if (!updatedAstro) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      res.json({
-        message: "User details updated successfully",
-        updatedAstro,
-      });
-    } catch (error) {
-      console.error("Error updating User details:", error);
-      res.status(500).json({ message: "Internal server error" });
+  const { id } = req.authData;
+
+  const updates = req.body;
+
+  try {
+    // Find the astrologer by ID and update their details
+    const updatedAstro = await User.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
+    );
+
+    if (!updatedAstro) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
 
+    res.json({
+      message: "User details updated successfully",
+      updatedAstro,
+    });
+  } catch (error) {
+    console.error("Error updating User details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
-
-  // Function to get horoscope details from Vedic Astrology API
+// Function to get horoscope details from Vedic Astrology API
 async function getHoroscopeDetails(lat, lng, dob, tob) {
   const apiKey = "894a22ed-12b6-564d-a204-562194a13ab9"; // Replace with your API key for VedicAstroAPI
   const tz = "5.5"; // Replace with the user's timezone
@@ -464,7 +462,5 @@ userRoutes.post("/daily_horoscope_Data", authenticate, async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve horoscope data" });
   }
 });
-
-
 
 export default userRoutes;

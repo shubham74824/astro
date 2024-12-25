@@ -35,6 +35,7 @@ authRoutes.post("/send_otp", async (req, res) => {
       if (!smsResponse || smsResponse.return !== true) {
         return res.status(500).json({ message: "Failed to send OTP" });
       }
+      
 
       return res.json({
         message: "OTP sent successfully for Astro login",
@@ -53,9 +54,12 @@ authRoutes.post("/send_otp", async (req, res) => {
       user.otpCreatedAt = new Date(); // Update OTP creation timestamp
       await user.save();
 
+      console.log("otpp...",otp)
+
       // Send OTP via SMS (or any other method)
       const message = `Your OTP is ${otp}. Please do not share it with anyone.`;
       const smsResponse = await sendOTP(number, message);
+
 
       if (!smsResponse || smsResponse.return !== true) {
         return res.status(500).json({ message: "Failed to send OTP" });
@@ -74,6 +78,7 @@ authRoutes.post("/send_otp", async (req, res) => {
         otp,
         otpCreatedAt: new Date(),
       });
+    
       await newUser.save();
 
       // Send OTP via SMS (or any other method)
