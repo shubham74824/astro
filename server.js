@@ -1,6 +1,5 @@
 import express from 'express';
-import User from "./src/models/UserEntity.js"
-import Astro from "./src/models/AstroEntity.js"
+
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import router from "./src/routes/commonRoutes.js";
