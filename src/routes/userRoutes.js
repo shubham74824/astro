@@ -1,6 +1,7 @@
 import express from "express";
-import UserAuth from "../models/UserEntity.js";
-import Astro from "../models/AstroEntity.js";
+import UserAuth from "../middleware/userAuth.js";
+import Astro from "../models/AstroEntity.js"
+import User from "../models/UserEntity.js";
 const userRoutes = express.Router();
 userRoutes.get("/kundli", (req, res) => {});
 userRoutes.get("/match_making", (req, res) => {});
@@ -80,6 +81,7 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
   }
 });
 
+// user profile
 userRoutes.get("/home_user", (req, res) => {
   const astrologers = [
     {
@@ -107,5 +109,55 @@ userRoutes.get("/home_user", (req, res) => {
 
   return res.json(astrologers);
 });
+
+//  user profole
+userRoutes.get("/user_profile", UserAuth, async (req, res) => {
+    const { id } = req.authData; // Accessing the userId attached in the middleware
+  
+    try {
+      // Find astrologer by ID and exclude OTP fields
+      const astrologer = await User.findById({ _id: id });
+  
+      if (!astrologer) {
+        return res.status(404).json({ message: "Astrologer not found" });
+      }
+  
+      // Send astrologer details
+      res.status(200).json({ success: true, data: astrologer });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }); 
+
+//   update profile
+
+userRoutes.post("/user_update", UserAuth, async (req, res) => {
+    const { id } = req.authData;
+  
+    const updates = req.body;
+  
+    try {
+      // Find the astrologer by ID and update their details
+      const updatedAstro = await User.findByIdAndUpdate(
+        id,
+        { $set: updates },
+        { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
+      );
+  
+      if (!updatedAstro) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.json({
+        message: "User details updated successfully",
+        updatedAstro,
+      });
+    } catch (error) {
+      console.error("Error updating User details:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+
 
 export default userRoutes;
