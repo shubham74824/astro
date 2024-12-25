@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/UserEntity.js";
 import Astro from "../models/AstroEntity.js";
 import jwt from "jsonwebtoken";
-
+import { sendOTP } from "../utils/AppUtils.js";
 const authRoutes = express.Router();
 
 const secretKey ="123abc$%4d9Ef!@#hijKL6789MN0pQRstuvWXYZ";
