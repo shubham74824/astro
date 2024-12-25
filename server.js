@@ -7,7 +7,7 @@ import astroRoutes from "./src/routes/astroRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
 const app = express(); // Initialize Express app
-app.use("*",cors)
+app.use(cors("*"))
 
 app.get('/', (req, res) => {
     res.send('Hello, World!'); // Respond with a simple message
