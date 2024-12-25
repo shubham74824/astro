@@ -3,6 +3,35 @@ import UserAuth from "../middleware/userAuth.js";
 import Astro from "../models/AstroEntity.js"
 import User from "../models/UserEntity.js";
 const userRoutes = express.Router();
+import axios from 'axios'
+import {getLatLong} from "../utils/getLatLong.js"
+
+const Username = "635294";
+const Password = "034da42232b5b34a57b7e6e27e031473622744d4";
+
+// Basic Authentication Middleware
+const authenticate = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return res.status(401).json({ message: "Missing Authorization Header" });
+  }
+
+  const base64Credentials = authHeader.split(" ")[1];
+  const credentials = Buffer.from(base64Credentials, "base64").toString(
+    "ascii"
+  );
+  const [username, password] = credentials.split(":");
+
+  // Replace these with your actual username and password
+  let validUsername = Username;
+  let validPassword = Password;
+
+  if (username === validUsername && password === validPassword) {
+    next();
+  } else {
+    res.status(401).json({ message: "Invalid Credentials" });
+  }
+};
 userRoutes.get("/kundli", (req, res) => {});
 userRoutes.get("/match_making", (req, res) => {});
 userRoutes.get("/horoscope", (req, res) => {});
@@ -157,6 +186,284 @@ userRoutes.post("/user_update", UserAuth, async (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+
+
+  // Function to get horoscope details from Vedic Astrology API
+async function getHoroscopeDetails(lat, lng, dob, tob) {
+  const apiKey = "894a22ed-12b6-564d-a204-562194a13ab9"; // Replace with your API key for VedicAstroAPI
+  const tz = "5.5"; // Replace with the user's timezone
+  const lang = "en"; // Language of response
+
+  const url = `https://api.vedicastroapi.com/v3-json/horoscope/planet-details?dob=${dob}&tob=${tob}&lat=${lat}&lon=${lng}&tz=${tz}&api_key=${apiKey}&lang=${lang}`;
+
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Vedic Astrology API request failed: ${error.message}`);
+  }
+}
+
+userRoutes.post("/match_making", async (req, res) => {
+  try {
+    const { maleName, maleDOB, malePlace, femaleName, femaleDOB, femalePlace } =
+      req.body;
+
+    // Validate inputs
+    if (
+      !maleName ||
+      !maleDOB ||
+      !malePlace ||
+      !femaleName ||
+      !femaleDOB ||
+      !femalePlace
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Convert DOB and Place into the format expected by the Astrology API
+    const maleLatLon = await getLatLong(malePlace);
+    const femaleLatLon = await getLatLong(femalePlace);
+
+    const requestBody = {
+      m_day: maleDOB.day,
+      m_month: maleDOB.month,
+      m_year: maleDOB.year,
+      m_hour: maleDOB.hour,
+      m_min: maleDOB.min,
+      m_lat: maleLatLon.lat,
+      m_lon: maleLatLon.lng,
+      m_tzone: 5.5, // Adjust as needed
+      f_day: femaleDOB.day,
+      f_month: femaleDOB.month,
+      f_year: femaleDOB.year,
+      f_hour: femaleDOB.hour,
+      f_min: femaleDOB.min,
+      f_lat: femaleLatLon.lat,
+      f_lon: femaleLatLon.lng,
+      f_tzone: 5.5, // Adjust as needed
+    };
+
+    const apiUsername = "635294";
+    const apiPassword = "034da42232b5b34a57b7e6e27e031473622744d4";
+    const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString(
+      "base64"
+    );
+
+    // Call the Astrology API
+    const response = await axios.post(
+      "https://json.astrologyapi.com/v1/match_ashtakoot_points",
+      requestBody,
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const horoscopeData = response.data;
+
+    // Assuming response.data has the required data as described earlier
+    if (!response.data) {
+      return res
+        .status(500)
+        .json({ message: "Invalid response from external API" });
+    }
+
+    // Ensure total points data exists
+    if (!horoscopeData.total) {
+      return res
+        .status(500)
+        .json({ message: "Missing 'total' data in the response" });
+    }
+
+    function transformResponse(data) {
+      const details = [
+        "varna",
+        "vashya",
+        "tara",
+        "yoni",
+        "maitri",
+        "gan",
+        "bhakut",
+        "nadi",
+      ].map((key) => ({
+        title: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the first letter
+        total_points: data[key].total_points,
+        received_points: data[key].received_points,
+      }));
+
+      return [
+        {
+          title: "Details",
+          desc: details,
+        },
+        ...details.map((detail) => ({
+          title: detail.title,
+          desc: data[detail.title.toLowerCase()].description,
+        })),
+        {
+          title: "Result",
+          desc: `The match has scored ${data.total.received_points} points out of ${data.total.total_points} points.`,
+        },
+        {
+          title: "Conclusion",
+          desc: data.conclusion.report,
+        },
+      ];
+    }
+
+    const formattedResponse = transformResponse(horoscopeData);
+
+    res.json(formattedResponse);
+  } catch (error) {
+    // Handle errors and send a response
+    console.error("Error fetching data from external API", error);
+    res.status(500).json({
+      message: "An error occurred while fetching data",
+      error: error.message,
+    });
+  }
+});
+// API endpoint to fetch kundali details based on address, dob, and tob
+userRoutes.post("/kundli", async (req, res) => {
+  const { address, dob, tob } = req.body;
+
+  // Validate that all required parameters are present
+  if (!address || !dob || !tob) {
+    return res
+      .status(400)
+      .json({ error: "Start address, end address, dob, and tob are required" });
+  }
+
+  try {
+    // Get latitude and longitude from the start and end addresses
+    const startCoordinates = await getLatLong(address);
+
+    // For simplicity, using the latitude and longitude of the start address for the Kundali API
+    const lat = startCoordinates.lat;
+    const lng = startCoordinates.lng;
+
+    // Get horoscope details using the latitude, longitude, dob, and tob
+    const horoscopeDetails = await getHoroscopeDetails(lat, lng, dob, tob);
+
+    // Send the response with the horoscope details
+    res.json(horoscopeDetails);
+  } catch (error) {
+    // Handle any errors during the process
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//   horoscope chart image
+
+userRoutes.post("/daily_horoscope_Data", authenticate, async (req, res) => {
+  try {
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1; // Months are zero-based
+    const year = now.getFullYear();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+
+    // Fixed latitude, longitude, and timezone
+    const lat = 25.7464; // Latitude for Varanasi, India
+    const lon = 82.6837; // Longitude for Varanasi, India
+    const tzone = 5.5; // IST (UTC+5:30)
+    const planetColor = "#ff0000";
+    const signColor = "#00ff00";
+    const lineColor = "#0000ff";
+    const chartType = "north";
+
+    // Construct the request body for the Astrology API
+    const requestBody1 = {
+      day,
+      month,
+      year,
+      hour,
+      min,
+      lat,
+      lon,
+      tzone,
+    };
+
+    const requestBody2 = {
+      day,
+      month,
+      year,
+      hour,
+      min,
+      lat,
+      lon,
+      tzone,
+      planetColor,
+      signColor,
+      lineColor,
+      chartType,
+    };
+
+    // Astrology API credentials
+    const apiUsername = "635294";
+    const apiPassword = "034da42232b5b34a57b7e6e27e031473622744d4";
+
+    // Encode credentials for Basic Auth
+    const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString(
+      "base64"
+    );
+
+    // Define the URLs for the two API endpoints
+    const url2 = "https://json.astrologyapi.com/v1/horo_chart_image/D1";
+    const url1 = "https://json.astrologyapi.com/v1/horo_chart/D1";
+
+    // Create an array of promises for the two POST requests
+    const requests = [
+      axios.post(url1, requestBody1, {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+      }),
+      axios.post(url2, requestBody2, {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          "Content-Type": "application/json",
+        },
+      }),
+    ];
+
+    // Wait for both requests to complete
+    const [response1, response2] = await Promise.all(requests);
+
+    // Process the responses as needed
+    const horoscopeData = response2.data.svg; // Assuming the second response contains the horoscope data
+
+    const cleanedSvgString = horoscopeData.replace(/\\\"/g, "");
+
+    // Create the data structure as per the given format
+    const result = response1.data.map((item) => {
+      return {
+        tabName: item.sign_name,
+        description: {
+          planet: item.planet || [],
+          planet_small: item.planet_small || [],
+          planet_degree: item.planet_degree || [],
+          horoscope_image: cleanedSvgString, // Assuming the first response contains the horoscope image
+        },
+      };
+    });
+
+    // Respond with the data in the required format
+    res.json({
+      message: "Horoscope data retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error fetching horoscope data:", error);
+    res.status(500).json({ message: "Failed to retrieve horoscope data" });
+  }
+});
 
 
 
