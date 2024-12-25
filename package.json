@@ -1,11 +1,10 @@
 {
   "name": "astro_help_me",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "build": "echo \"No build step defined\""
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
