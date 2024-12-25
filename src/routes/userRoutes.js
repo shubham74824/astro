@@ -20,51 +20,33 @@ userRoutes.get("/my_profile", (req, res) => {
 });
 
 userRoutes.get("/all_astro", async (req, res) => {
-  // const astrologers = [
-  //     {
-  //         id: '1',
-  //         name: 'Aacharya AtulRam Shastri',
-  //         imageUrl: 'https://images.pexels.com/photos/29894015/pexels-photo-29894015/free-photo-of-festive-decor-on-classic-red-car-for-holidays.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load',
-  //         specialties: ['Vedic Astrology', 'Vaastu'],
-  //         languages: ['Hindi'],
-  //         experience: 7,
-  //         pricePerMin: 10,
-  //         followers: 1500,
-  //         isVerified: true,
-  //     },
-  //     {
-  //         id: '2',
-  //         name: 'Krishan Ojha',
-  //         imageUrl: 'https://images.pexels.com/photos/14635526/pexels-photo-14635526.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load',
-  //         specialties: ['Vedic Astrology', 'Nadi Astrology', 'Numerology'],
-  //         languages: ['Hindi'],
-  //         experience: 29,
-  //         pricePerMin: 20,
-  //         followers: 2500,
-  //         isVerified: true,
-  //     },
-  //     {
-  //         id: '3',
-  //         name: 'Aacharya AtulRam Shastri',
-  //         imageUrl: 'https://images.pexels.com/photos/5370666/pexels-photo-5370666.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load',
-  //         specialties: ['Vedic Astrology', 'Vaastu'],
-  //         languages: ['Hindi'],
-  //         experience: 7,
-  //         pricePerMin: 10,
-  //         followers: 1500,
-  //         isVerified: true,
-  //     },
-  // ];
-
-  try {
-    const getAllAstro = await Astro.find();
-    if (!getAllAstro) {
-      return res.json({ data: [] });
-    }
-    return res.status(200).json(getAllAstro);
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
-  }
+    try {
+        const getResponse = await Astro.find();
+    
+        // Check if getResponse is empty
+        if (!getResponse || getResponse.length === 0) {
+          return res.json({ data: [] });
+        }
+    
+        // Map over the array of astrologers and transform each one
+        const transformedResponse = getResponse.map((astro) => ({
+          id: astro._id.toString(), // Convert ObjectId to string if necessary
+          name: astro.fullName,
+          imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
+          specialties: astro.specialties.length ? astro.specialties : [], // Default to empty array if no specialties
+          languages: astro.languages.length ? astro.languages : [], // Default to empty array if no languages
+          experience: parseInt(astro.experience), // Convert experience to number
+          pricePerMin: parseInt(astro.pricePerMin) || 10, // Set default price if it's not present
+          followers: parseInt(astro.followers) || 0, // Set default followers if it's not present
+          isVerified: astro.isVerified,
+        }));
+    
+        // Send the transformed data back as an array
+        return res.status(200).json(transformedResponse);
+      } catch (error) {
+        console.error("Error:", error); // Log the error for debugging
+        res.status(500).json({ message: "Internal server error" });
+      }
 });
 userRoutes.get("/single_astro/:id", async (req, res) => {
   try {
@@ -78,8 +60,21 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
     if (!getResponse) {
       return res.status(404).json({ message: "No Astro available by this ID" });
     }
+    const transformedResponse = {
+      id: getResponse._id,
+      name: getResponse.fullName,
+      imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
+      specialties: getResponse.specialties.length
+        ? getResponse.specialties
+        : [],
+      languages: getResponse.languages.length ? getResponse.languages : [],
+      experience: parseInt(getResponse.experience),
+      pricePerMin: parseInt(getResponse.pricePerMin),
+      followers: parseInt(getResponse.followers),
+      isVerified: getResponse.isVerified,
+    };
 
-    return res.status(200).json(getResponse);
+    return res.status(200).json(transformedResponse);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

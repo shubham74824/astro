@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 
 const astroSchema = new mongoose.Schema({
@@ -8,6 +9,12 @@ const astroSchema = new mongoose.Schema({
     experience: String,
     city: String,
     shortBio: String,
+    imageUrl:String,
+    specialties:[],
+    languages:[],
+    pricePerMin:Number,
+    followers:Number,
+    isVerified:{type:Boolean,default: false},
     isProfileCompleted: {type: Boolean, default: false},
     otp: { type: String, default: null },
     otpCreatedAt: { type: Date, default: null },

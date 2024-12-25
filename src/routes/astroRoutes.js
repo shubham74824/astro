@@ -1,17 +1,15 @@
 import express from "express";
 import astrologerAuth from "../middleware/astroAuth.js";
-import Astro from "../models/AstroEntity.js"
+import Astro from "../models/AstroEntity.js";
 const astroRoutes = express.Router();
 // astro profile
 astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
-
-
   const { id } = req.authData; // Accessing the userId attached in the middleware
-   
+
   try {
     // Find astrologer by ID and exclude OTP fields
-    const astrologer = await Astro.findById({_id:id})
-  
+    const astrologer = await Astro.findById({ _id: id });
+
     if (!astrologer) {
       return res.status(404).json({ message: "Astrologer not found" });
     }
@@ -23,34 +21,33 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
   }
 });
 
-// astro update 
+// astro update
 astroRoutes.post("/astro_update", astrologerAuth, async (req, res) => {
+  const { id } = req.authData;
 
-    const { id } = req.authData;
+  const updates = req.body;
 
-    const updates = req.body;
-  
-    try {
-      // Find the astrologer by ID and update their details
-      const updatedAstro = await Astro.findByIdAndUpdate(
-        id,
-        { $set: updates },
-        { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
-      );
-  
-      if (!updatedAstro) {
-        return res.status(404).json({ message: "Astrologer not found" });
-      }
-  
-      res.json({
-        message: "Astrologer details updated successfully",
-        updatedAstro,
-      });
-    } catch (error) {
-      console.error("Error updating astrologer details:", error);
-      res.status(500).json({ message: "Internal server error" });
+  try {
+    // Find the astrologer by ID and update their details
+    const updatedAstro = await Astro.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
+    );
+
+    if (!updatedAstro) {
+      return res.status(404).json({ message: "Astrologer not found" });
     }
-  });
+
+    res.json({
+      message: "Astrologer details updated successfully",
+      updatedAstro,
+    });
+  } catch (error) {
+    console.error("Error updating astrologer details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 //   get astro
 astroRoutes.get("/astro", async (req, res) => {
@@ -58,10 +55,10 @@ astroRoutes.get("/astro", async (req, res) => {
     name: "John Doe",
     astroId: "AST12345",
     profile: "https://example.com/profile.jpg",
-    today_chat_time: "2 hours",
-    today_call_time: "1 hour",
-    total_chat_time: "50 hours",
-    total_call_time: "25 hours",
+    today_chat_time: "00:00",
+    today_call_time: "00:00",
+    total_chat_time: "000:00",
+    total_call_time: "00:00",
     id: "1",
   };
 
