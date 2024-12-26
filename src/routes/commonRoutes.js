@@ -1,9 +1,9 @@
-import express from "express";
+import express from 'express';
 
 const router = express.Router();
 
-router.get("/refund_policy", (req, res) => {
-  const refundPolicy = `
+router.get("/about", (req, res) => {
+    const refundPolicy = `
     <div>
     <h1>Refund Policy</h1>
     <p>Thank you for choosing AstroHelpMe. We strive to provide the best possible guidance and services.</p>
@@ -20,10 +20,10 @@ router.get("/refund_policy", (req, res) => {
     <p>Thank you for your understanding and cooperation.</p>
 </div>
 `;
-  return res.send(refundPolicy);
+    return res.send(refundPolicy);
 });
-router.get("/terms_condition", (req, res) => {
-  const termsConditions = `
+router.get("/terms", (req, res) => {
+    const termsConditions = `
       <div>
     <h1>Terms and Conditions</h1>
     <p>Effective Date: 26-12-2024</p>
@@ -74,10 +74,10 @@ router.get("/terms_condition", (req, res) => {
 
     `;
 
-  return res.send(termsConditions);
+    return res.send(termsConditions);
 });
 router.get("/privacy", (req, res) => {
-  const privacyPolicy = `
+    const privacyPolicy = `
     <div>
     <h1>Privacy Policy</h1>
     <p><strong>Effective Date: 26-12-2024</strong></p>
@@ -130,7 +130,10 @@ router.get("/privacy", (req, res) => {
     <p>We may update this Privacy Policy from time to time. Changes will be posted on this page, and the "Effective Date" will be updated accordingly.</p>
 </div>
 `;
-  return res.send(privacyPolicy);
+    return res.send(privacyPolicy);
+});
+router.get('/feedback', (req, res) => {
+    return res.json("<div>Feedback Page</div>");
 });
 
 
