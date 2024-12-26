@@ -258,20 +258,6 @@ userRoutes.post("/match_making", async (req, res) => {
   }
 });
 userRoutes.get("/horoscope", (req, res) => {});
-// userRoutes.get("/my_profile",(req, res) => {
-//     const dummyProfile = {
-//         id: "1",
-//         name: "John Doe",
-//         email: "johndoe@example.com",
-//         number: "+91 98765 43210",
-//         gender: "Male",
-//         address: "New Delhi"
-//     };
-
-//     // Send the dummy profile data as the response
-//     res.json(dummyProfile);
-
-// });
 
 userRoutes.get("/my_profile", UserAuth, async (req, res) => {
   const { id } = req.authData; // Accessing the userId attached in the middleware
@@ -284,7 +270,7 @@ userRoutes.get("/my_profile", UserAuth, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const userProfile = {
-        _id: user._id,
+        id: user._id,
         name: user.name || "",
         email: user.email || "",
         number: user.number,

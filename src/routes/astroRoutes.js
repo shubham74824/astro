@@ -15,15 +15,16 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
     }
     const userProfile = {
       id: user._id,
-      name: user.fullName || "",
+      fullName: user.fullName || "",
       email: user.email || "",
       number: user.number,
       gender: user.gender || "",
+      experience: user.experience || "",
       city: user.city || "",
-      address: user.address || "",
+
       shortBio: user.shortBio || "",
-      specialties: user.specialties || "",
-      languages: user.languages || "",
+      profile:
+        "https://images.pexels.com/photos/29879483/pexels-photo-29879483/free-photo-of-festive-christmas-ornament-on-pine-tree-branch.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load",
     };
 
     // Send astrologer details
