@@ -1,5 +1,5 @@
 import express from "express";
-import astrologerAuth from "../middleware/astroAuth"
+import astrologerAuth from "../middleware/astroAuth.js"
 
 const astroRoutes = express.Router();
 astroRoutes.get("/astro_profile",astrologerAuth,async(req, res) => {

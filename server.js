@@ -13,15 +13,16 @@ app.get('/', (req, res) => {
     res.send('Hello, World!'); // Respond with a simple message
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8081;
 
 app.use(express.json())
 app.use(astroRoutes)
 app.use(router);
 app.use(userRoutes)
 app.use(authRoutes);
-
-mongoose.connect('mongodb://localhost:27017/astro', {
+const url =
+  "mongodb+srv://meetwithshubhamsharma:Shubham7482@cluster0.tizx5.mongodb.net/";
+mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(r => console.log("DB CONNECTED"));
