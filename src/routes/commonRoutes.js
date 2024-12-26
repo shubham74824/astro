@@ -6,14 +6,14 @@ router.get("/about", (req, res) => {
 
  const aboutUs=`
  <div style="display: flex; align-items: center; padding: 10px; gap: 20px;">
-        <img src="https://via.placeholder.com/150" alt="Placeholder Image" style="width: 150px; height: 150px; border-radius: 10px;">
+        <img src="https://images.pexels.com/photos/29879483/pexels-photo-29879483/free-photo-of-festive-christmas-ornament-on-pine-tree-branch.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load" alt="Placeholder Image" style="width: 150px; height: 150px; border-radius: 10px;">
         <div style="flex: 1;">
             <h2 style="margin: 0; font-size: 1.5rem;">Flexbox with Image and Text</h2>
             <p style="margin: 5px 0 0; font-size: 1rem; color: #555;">
                 This is an example of a layout using Flexbox with an image and text displayed inline.
             </p>
         </div>
-    </div>`
+</div>`
   
   const refundPolicy = `
     <div>
