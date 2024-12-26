@@ -7,8 +7,8 @@ router.get("/about", (req, res) => {
  <div style="display: flex; align-items: center; padding: 10px; gap: 20px;">
         <img src="https://i.ibb.co/tq452Qk/Whats-App-Image-2024-12-26-at-22-41-30-74d117bd.jpg" alt="Placeholder Image" style="width: 150px; height: 150px; border-radius: 10px;">
         <div style="flex: 1;">
-            <h2 style="margin: 0; font-size: 1.5rem;">Flexbox with Image and Text</h2>
-              <div>
+            
+              
     <h1>About Me </h1>
     <p>Dr Pranav Kumar Shastri international astrologer, remedy expert ,PhD in vedic astrology,and gold medalist,lifetime achiever, vastu expert, numerologist reki grandmaster,tarot cards,, the visionary CEO and founder of AstroHelpme, has redefined the way people interact with astrology in today's fast-paced digital world. With a Ph.D. in Vedic Astrology and over two decades of experience, Dr. Shastri combines his deep-rooted knowledge of traditional astrological practices with cutting-edge technology to create a seamless user experience. Under his leadership, *AstroHelpme * has become more than just an astrology app; it is a platform that empowers users to navigate life’s uncertainties with confidence. The app offers personalized daily horoscopes, compatibility analyses, and in-depth birth chart readings, all tailored to individual needs. What sets * AstroHelpme * apart is Dr. Shastri's commitment to authenticity and accuracy. Each astrological insight is crafted using scientifically validated techniques, ensuring that users receive guidance they can trust. </p>
 <br/>
@@ -24,7 +24,7 @@ Dr. Shastri's journey to create * AstroHelpme * began with a simple yet profound
 <p>In a world where uncertainty is a constant, Dr Pranav Kumar Shastri international astrologer, remedy expert ,PhD in vedic astrology,and gold medalist,lifetime achiever, vastu expert, numerologist 
 reki grandmaster,tarot cards, AstroHelpme * serves as a guiding light, bridging the gap between tradition and technology. His unwavering dedication to empowering individuals through astrology has not only transformed lives but also set a new standard for the industry. As he looks to the future, Dr. Shastri envisions * AstroHelpme becoming a global hub for astrological wisdom, inspiring people to embrace the cosmic rhythms that shape their journey.</p>
 </div>
-        </div>
+        
 </div>`;
 
   const refundPolicy = `
