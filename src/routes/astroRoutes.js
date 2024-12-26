@@ -24,7 +24,7 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
 
       shortBio: user.shortBio || "",
       profile:
-        "https://images.pexels.com/photos/29879483/pexels-photo-29879483/free-photo-of-festive-christmas-ornament-on-pine-tree-branch.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load",
+        "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg",
     };
 
     // Send astrologer details
