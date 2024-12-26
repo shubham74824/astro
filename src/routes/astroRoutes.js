@@ -1,20 +1,23 @@
 import express from "express";
-
+import astrologerAuth from "../middleware/astroAuth"
 
 const astroRoutes = express.Router();
-astroRoutes.get("/astro_profile",(req, res) => {
-    const astrologerData = {
-        fullName: "John Doe",
-        number: "+1234567890",
-        gender: "Male",
-        email: "john.doe@example.com",
-        experience: "5 years",
-        city: "New York",
-        shortBio: "Experienced astrologer specializing in horoscope and birth chart readings.",
-        id: "astro123",
-        profile: "https://images.pexels.com/photos/29879483/pexels-photo-29879483/free-photo-of-festive-christmas-ornament-on-pine-tree-branch.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load" // Image URL
-    };
-    return res.json(astrologerData);
+astroRoutes.get("/astro_profile",astrologerAuth,async(req, res) => {
+    const { id } = req.authData; // Accessing the userId attached in the middleware
+
+    try {
+      // Find astrologer by ID and exclude OTP fields
+      const astrologer = await Astro.findById({ _id: id });
+  
+      if (!astrologer) {
+        return res.status(404).json({ message: "Astrologer not found" });
+      }
+  
+      // Send astrologer details
+      res.status(200).json({ success: true, data: astrologer });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
 });
 astroRoutes.get("/astro",(req, res) => {
     const dummyDashboardData = {
