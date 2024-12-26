@@ -270,16 +270,15 @@ userRoutes.get("/my_profile", UserAuth, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const userProfile = {
-        id: user._id,
-        name: user.name || "",
-        email: user.email || "",
-        number: user.number,
-        gender: user.gender || "",
-        address: user.address || "",
-      
-      };
-  
-      return res.json( userProfile );
+      id: user._id,
+      name: user.name || "",
+      email: user.email || "",
+      number: user.number,
+      gender: user.gender || "",
+      address: user.address || "",
+    };
+
+    return res.json(userProfile);
 
     // Send astrologer details
     res.status(200).json({ user });
@@ -288,9 +287,8 @@ userRoutes.get("/my_profile", UserAuth, async (req, res) => {
   }
 });
 
-userRoutes.patch("/update_profile",UserAuth,async(req,res)=>{
-
-    const { id } = req.authData;
+userRoutes.patch("/update_profile", UserAuth, async (req, res) => {
+  const { id } = req.authData;
 
   const updates = req.body;
 
@@ -307,15 +305,13 @@ userRoutes.patch("/update_profile",UserAuth,async(req,res)=>{
     }
 
     res.json({
-      
       updatedAstro,
     });
   } catch (error) {
     console.error("Error updating User details:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-
-})
+});
 
 userRoutes.get("/all_astro", async (req, res) => {
   // const astrologers = [
@@ -362,6 +358,8 @@ userRoutes.get("/all_astro", async (req, res) => {
       return res.json({ data: [] });
     }
 
+
+
     // Map over the array of astrologers and transform each one
     const transformedResponse = getResponse.map((astro) => ({
       id: astro._id.toString(), // Convert ObjectId to string if necessary
@@ -369,7 +367,7 @@ userRoutes.get("/all_astro", async (req, res) => {
       imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
       specialties: astro.specialties.length ? astro.specialties : [], // Default to empty array if no specialties
       languages: astro.languages.length ? astro.languages : [], // Default to empty array if no languages
-      experience: astro.experience || 0, // Convert experience to number
+      experience: parseInt(astro.experience) || 0, // Convert experience to number
       pricePerMin: parseInt(astro.pricePerMin) || 10, // Set default price if it's not present
       followers: parseInt(astro.followers) || 0, // Set default followers if it's not present
       isVerified: astro.isVerified,
