@@ -14,25 +14,22 @@ router.get("/about", (req, res) => {
         </div>
 </div>`;
 
-
-
-
   const refundPolicy = `
     <div>
-    <h1>Refund Policy</h1>
-    <p>Thank you for choosing AstroHelpMe. We strive to provide the best possible guidance and services.</p>
+    <h1>About Me </h1>
+    <p>Dr Pranav Kumar Shastri international astrologer, remedy expert ,PhD in vedic astrology,and gold medalist,lifetime achiever, vastu expert, numerologist reki grandmaster,tarot cards,, the visionary CEO and founder of AstroHelpme, has redefined the way people interact with astrology in today's fast-paced digital world. With a Ph.D. in Vedic Astrology and over two decades of experience, Dr. Shastri combines his deep-rooted knowledge of traditional astrological practices with cutting-edge technology to create a seamless user experience. Under his leadership, *AstroHelpme * has become more than just an astrology app; it is a platform that empowers users to navigate life’s uncertainties with confidence. The app offers personalized daily horoscopes, compatibility analyses, and in-depth birth chart readings, all tailored to individual needs. What sets * AstroHelpme * apart is Dr. Shastri's commitment to authenticity and accuracy. Each astrological insight is crafted using scientifically validated techniques, ensuring that users receive guidance they can trust. </p>
+<br/>
+    <p>
+Dr. Shastri's journey to create * AstroHelpme * began with a simple yet profound vision: to make astrology accessible and relevant in the digital age. He observed that while astrology remained a trusted tool for millions, the lack of reliable platforms often led to misinformation and confusion. Recognizing this gap, he envisioned a solution that would blend traditional wisdom with AI-powered algorithms. Today, * AstroHelpme * stands as a testament to his dedication, boasting millions of downloads and a global user base. The app’s intuitive interface allows users to access real-time astrological insights, consult expert astrologers, and even receive personalized remedies, all at their fingertips. </p>
+  <br/>
 
-    <h2>No Refund Policy</h2>
-    <p>Due to the nature of our offerings, all purchases made on AstroHelpMe are final and non-refundable. This policy is in place because:</p>
-    <ul>
-        <li>The services provided involve personalized consultations, which cannot be undone or resold.</li>
-        <li>Digital products, once delivered, cannot be returned.</li>
-    </ul>
-
-    <p>We encourage all customers to carefully review the service descriptions and make informed decisions before making a 
-    purchase. If you have any questions or concerns, please feel free to contact our support team at [insert contact details].</p>
-
-    <p>Thank you for your understanding and cooperation.</p>
+    <p>Dr. Shastri also believes in astrology’s potential to foster self-awareness and growth. Through * AstroHelpme *, he aims to demystify astrological concepts, presenting them as tools for introspection rather than mere predictions. This holistic approach has resonated deeply with users, particularly millennials and Gen Z, who seek meaningful connections between ancient wisdom and modern challenges. Moreover, Dr. Shastri’s emphasis on ethical practices ensures that the app upholds the highest standards of integrity, setting a benchmark in the industry..</p>
+<br/>
+    <p>As a thought leader, Dr. Shastri actively engages with his audience through webinars, podcasts, and live sessions, sharing his insights on astrology’s relevance in contemporary life. His passion for education extends to the app’s learning section, where users can explore the basics of astrology and its practical applications. Under his stewardship, * AstroHelpme * continues to evolve, incorporating user feedback and staying ahead of technological advancements. Whether it's integrating AI-driven astrological predictions or launching multilingual support, Dr. Shastri ensures that * AstroHelpme * remains at the forefront of innovation.  
+</p>
+<br/>
+<p>In a world where uncertainty is a constant, Dr Pranav Kumar Shastri international astrologer, remedy expert ,PhD in vedic astrology,and gold medalist,lifetime achiever, vastu expert, numerologist 
+reki grandmaster,tarot cards, AstroHelpme * serves as a guiding light, bridging the gap between tradition and technology. His unwavering dedication to empowering individuals through astrology has not only transformed lives but also set a new standard for the industry. As he looks to the future, Dr. Shastri envisions * AstroHelpme becoming a global hub for astrological wisdom, inspiring people to embrace the cosmic rhythms that shape their journey.</p>
 </div>
 `;
   return res.json(aboutUs);
