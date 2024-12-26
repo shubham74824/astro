@@ -1,6 +1,7 @@
 import express from "express";
 import astrologerAuth from "../middleware/astroAuth.js"
-
+import Astro from "../models/AstroEntity.js"
+import User from "../models/UserEntity.js"
 const astroRoutes = express.Router();
 astroRoutes.get("/astro_profile",astrologerAuth,async(req, res) => {
     const { id } = req.authData; // Accessing the userId attached in the middleware
