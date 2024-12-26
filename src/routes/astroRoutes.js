@@ -34,13 +34,9 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
   }
 });
 astroRoutes.get("/astro", astrologerAuth, async (req, res) => {
-  const {id }= req.authData;
-  
+  const { id } = req.authData;
 
-    
-  const user = await Astro.findOne({ _id: id })
-  
- 
+  const user = await Astro.findOne({ _id: id });
 
   if (!user) {
     return res.status(404).json({ message: "Astrologer not found" });
