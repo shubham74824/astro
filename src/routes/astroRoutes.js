@@ -33,17 +33,29 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-astroRoutes.get("/astro", (req, res) => {
+astroRoutes.get("/astro", astrologerAuth, async (req, res) => {
+  const {id }= req.authData;
+  
+
+    
+  const user = await Astro.findOne({ _id: id })
+  
+ 
+
+  if (!user) {
+    return res.status(404).json({ message: "Astrologer not found" });
+  }
   const dummyDashboardData = {
-    name: "John Doe",
-    astroId: "AST12345",
+    name: user.fullName || "",
+    astroId: user._id.toString().slice(0, 4),
     profile: "https://example.com/profile.jpg",
-    today_chat_time: "2 hours",
-    today_call_time: "1 hour",
-    total_chat_time: "50 hours",
-    total_call_time: "25 hours",
-    id: "1",
+    today_chat_time: "0 hour",
+    today_call_time: "0 hour",
+    total_chat_time: "00 hours",
+    total_call_time: "00 hours",
+    id: user._id.toString().slice(0, 4),
   };
+
   return res.json(dummyDashboardData);
 });
 astroRoutes.get("/call_astro", (req, res) => {
