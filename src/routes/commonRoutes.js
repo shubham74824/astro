@@ -15,7 +15,8 @@ router.get("/about", (req, res) => {
         <li>Digital products, once delivered, cannot be returned.</li>
     </ul>
 
-    <p>We encourage all customers to carefully review the service descriptions and make informed decisions before making a purchase. If you have any questions or concerns, please feel free to contact our support team at [insert contact details].</p>
+    <p>We encourage all customers to carefully review the service descriptions and make informed decisions before making a 
+    purchase. If you have any questions or concerns, please feel free to contact our support team at [insert contact details].</p>
 
     <p>Thank you for your understanding and cooperation.</p>
 </div>

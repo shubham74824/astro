@@ -14,7 +14,7 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
       return res.status(404).json({ message: "Astrologer not found" });
     }
     const userProfile = {
-      _id: user._id,
+      id: user._id,
       name: user.fullName || "",
       email: user.email || "",
       number: user.number,
@@ -27,7 +27,7 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
     };
 
     // Send astrologer details
-    res.status(200).json({ userProfile });
+    res.status(200).json(userProfile);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

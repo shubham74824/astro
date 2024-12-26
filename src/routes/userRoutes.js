@@ -293,7 +293,7 @@ userRoutes.get("/my_profile", UserAuth, async (req, res) => {
       
       };
   
-      return res.json({ user: userProfile });
+      return res.json( userProfile );
 
     // Send astrologer details
     res.status(200).json({ user });
