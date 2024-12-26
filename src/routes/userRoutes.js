@@ -425,7 +425,20 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
   }
   // return res.json(astrologerProfile);
 });
-userRoutes.get("/home_user", (req, res) => {
+userRoutes.get("/home_user", async(req, res) => {
+
+  const astrologer=await Astro.find();
+  if(!astrologer){
+    return res.json([])
+  };
+  const getResposne=astrologer.map((value)=>{
+    return {
+      id:value._id,
+      name:value.fullName,
+      price:value.pricePerMin?.toString()||"",
+      image:"https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg"
+    }
+  })
   const astrologers = [
     {
       id: "1",
@@ -450,7 +463,7 @@ userRoutes.get("/home_user", (req, res) => {
     },
   ];
 
-  return res.json(astrologers);
+  return res.json(getResposne);
 });
 
 async function getHoroscopeDetails(lat, lng, dob, tob) {
