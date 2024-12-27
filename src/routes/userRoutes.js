@@ -388,8 +388,8 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
       image_url:
         "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg", // Set default or get from data
       expertise: getResponse.specialties.length
-        ? getResponse.specialties
-        : [],
+        ? getResponse.specialties[0]
+        : "",
       
       experience: getResponse.experience || "",
       rate_per_minute: getResponse.pricePerMin || "",
