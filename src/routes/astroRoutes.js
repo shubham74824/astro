@@ -21,7 +21,7 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
       gender: user.gender || "",
       experience: user.experience || "",
       city: user.city || "",
-
+      pricePerMin:user.pricePerMin||"",
       shortBio: user.shortBio || "",
       profile:
         "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg",
@@ -91,4 +91,30 @@ astroRoutes.get("/chat_astro", (req, res) => {
   return res.json(dummyChatData);
 });
 
+astroRoutes.patch("/astro_update", astrologerAuth, async (req, res) => {
+  const { id } = req.authData;
+
+  const updates = req.body;
+
+  try {
+    // Find the astrologer by ID and update their details
+    const updatedAstro = await Astro.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true, fields: "-otp -otpCreatedAt" } // Exclude OTP fields
+    );
+
+    if (!updatedAstro) {
+      return res.status(404).json({ message: "Astrologer not found" });
+    }
+
+    res.json({
+      message: "Astrologer details updated successfully",
+      updatedAstro,
+    });
+  } catch (error) {
+    console.error("Error updating astrologer details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 export default astroRoutes;
