@@ -392,7 +392,7 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
         : "",
       
       experience: getResponse.experience || "",
-      rate_per_minute: getResponse.pricePerMin || "",
+      rate_per_minute: getResponse.pricePerMin ? String(getResponse.pricePerMin) : "",
       consultations:"0",
       rating:"4.2",
       thoughts:"good astrologer",
