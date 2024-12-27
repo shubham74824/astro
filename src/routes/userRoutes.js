@@ -55,6 +55,9 @@ userRoutes.post("/daily_horoscope_Data", async (req, res) => {
     const apiPassword = "034da42232b5b34a57b7e6e27e031473622744d4";
 
     // Encode credentials for Basic Auth
+    const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString(
+      "base64"
+    );
 
     // Define the URLs for the two API endpoints
     const url2 = "https://json.astrologyapi.com/v1/horo_chart_image/D1";
@@ -213,7 +216,7 @@ userRoutes.post("/match_making", async (req, res) => {
           desc: data.conclusion.report,
         },
       ];
-    };
+    }
 
     const formattedResponse = transformResponse(horoscopeData);
 
@@ -333,7 +336,8 @@ userRoutes.get("/all_astro", async (req, res) => {
     const transformedResponse = getResponse.map((astro) => ({
       id: astro._id.toString(), // Convert ObjectId to string if necessary
       name: astro.fullName,
-      imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
+      imageUrl:
+        "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg", // Set default or get from data
       specialties: astro.specialties.length ? astro.specialties : [], // Default to empty array if no specialties
       languages: astro.languages.length ? astro.languages : [], // Default to empty array if no languages
       experience: parseInt(astro.experience) || 0, // Convert experience to number
@@ -352,19 +356,20 @@ userRoutes.get("/all_astro", async (req, res) => {
   // return res.json(astrologers);
 });
 
+   // const astrologerProfile = {
+    //     name: 'Aacharya AtulRam Shastri',
+    //     expertise: 'Vedic Astrology, Vaastu, Numerology',
+    //     ratePerMinute: '10',
+    //     experience: '7 years',
+    //     rating: '4.5',
+    //     consultations: '200+',
+    //     thoughts: 'I believe astrology is a way to understand the cosmic forces and find the right direction in life.',
+    //     aboutMe: 'I am a Vedic astrologer with over 7 years of experience, dedicated to providing insights through astrology.',
+    //     imageUrl: 'https://example.com/astrologer-image.jpg', // Replace with a real image URL
+    // };
+
 
 userRoutes.get("/single_astro/:id", async (req, res) => {
-  // const astrologerProfile = {
-  //     name: 'Aacharya AtulRam Shastri',
-  //     expertise: 'Vedic Astrology, Vaastu, Numerology',
-  //     ratePerMinute: '10',
-  //     experience: '7 years',
-  //     rating: '4.5',
-  //     consultations: '200+',
-  //     thoughts: 'I believe astrology is a way to understand the cosmic forces and find the right direction in life.',
-  //     aboutMe: 'I am a Vedic astrologer with over 7 years of experience, dedicated to providing insights through astrology.',
-  //     imageUrl: 'https://example.com/astrologer-image.jpg', // Replace with a real image URL
-  // };
   try {
     const { id } = req.params;
 
@@ -373,29 +378,78 @@ userRoutes.get("/single_astro/:id", async (req, res) => {
     }
 
     const getResponse = await Astro.findById(id);
+    
     if (!getResponse) {
       return res.status(404).json({ message: "No Astro available by this ID" });
     }
     const transformedResponse = {
       id: getResponse._id,
       name: getResponse.fullName,
-      imageUrl: "https://example.com/default-image.jpg", // Set default or get from data
-      specialties: getResponse.specialties.length
+      image_url:
+        "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg", // Set default or get from data
+      expertise: getResponse.specialties.length
         ? getResponse.specialties
         : [],
-      languages: getResponse.languages.length ? getResponse.languages : [],
-      experience: astro.experience || 0,
-      pricePerMin: parseInt(getResponse.pricePerMin) || 0,
-      followers: parseInt(getResponse.followers) || 0,
-      isVerified: getResponse.isVerified,
+      
+      experience: getResponse.experience || "",
+      rate_per_minute: getResponse.pricePerMin || "",
+      consultations:"0",
+      rating:"4.2",
+      thoughts:"good astrologer",
+      about_me:getResponse.shortBio,
+    
     };
+    
 
     return res.status(200).json(transformedResponse);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-  // return res.json(astrologerProfile);
 });
+
+// userRoutes.get("/single_astro/:id", async (req, res) => {
+//   // const astrologerProfile = {
+//   //     name: 'Aacharya AtulRam Shastri',
+//   //     expertise: 'Vedic Astrology, Vaastu, Numerology',
+//   //     ratePerMinute: '10',
+//   //     experience: '7 years',
+//   //     rating: '4.5',
+//   //     consultations: '200+',
+//   //     thoughts: 'I believe astrology is a way to understand the cosmic forces and find the right direction in life.',
+//   //     aboutMe: 'I am a Vedic astrologer with over 7 years of experience, dedicated to providing insights through astrology.',
+//   //     imageUrl: 'https://example.com/astrologer-image.jpg', // Replace with a real image URL
+//   // };
+//   try {
+//     const { id } = req.params;
+
+//     if (!id) {
+//       return res.status(400).json({ message: "Astrologer ID is required" });
+//     }
+
+//     const getResponse = await Astro.findById({_id:id});
+//     if (!getResponse) {
+//       return res.status(404).json({ message: "No Astro available by this ID" });
+//     }
+//     const transformedResponse = {
+//       id: getResponse._id,
+//       name: getResponse.fullName,
+//       imageUrl: "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg", // Set default or get from data
+//       specialties: getResponse.specialties.length
+//         ? getResponse.specialties
+//         : [],
+//       languages: getResponse.languages.length ? getResponse.languages : [],
+//       experience: astro.experience || 0,
+//       pricePerMin: parseInt(getResponse.pricePerMin) || 0,
+//       followers: parseInt(getResponse.followers) || 0,
+//       isVerified: getResponse.isVerified,
+//     };
+
+//     return res.status(200).json(transformedResponse);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+//   // return res.json(astrologerProfile);
+// });
 userRoutes.get("/home_user", async (req, res) => {
   const astrologer = await Astro.find();
   if (!astrologer) {
@@ -472,187 +526,252 @@ async function getLatLong(address) {
   }
 }
 
+async function getLatLon(address) {
+  const apiKey = "1910725eac824c56a5954075170fc2c8"; // Replace with your OpenCage API key
+  const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+    address
+  )}&key=${apiKey}`;
 
+  try {
+    const response = await axios.get(url);
 
+    // Check if results exist
+    if (response.data.results.length > 0) {
+      const result = response.data.results[0];
+      const lat = result.geometry.lat;
+      const lon = result.geometry.lng; // Use `.lng` for longitude
 
-// async function getLatLon(address) {
-//   const apiKey = "1910725eac824c56a5954075170fc2c8"; // Replace with your OpenCage API key
-//   const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-//     address
-//   )}&key=${apiKey}`;
+      console.log("Extracted Latitude:", lat, "Longitude:", lon); // Debug logs
+      return { lat, lon }; // Return both lat and lon
+    } else {
+      throw new Error("Geocoding failed: No results found");
+    }
+  } catch (error) {
+    console.error(`Geocoding API request failed: ${error.message}`);
+    throw new Error(`Geocoding API request failed: ${error.message}`);
+  }
+}
 
-//   try {
-//     const response = await axios.get(url);
+async function fetchAstrologyData(endpoint, requestBody) {
+  const apiUsername = "635294"; // Your API Username
+  const apiPassword = "034da42232b5b34a57b7e6e27e031473622744d4"; // Your API Password
+  var language = "hi";
+  // Combine username and password for Basic Authentication
+  const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString("base64");
 
-//     // Check if results exist
-//     if (response.data.results.length > 0) {
-//       const result = response.data.results[0];
-//       const lat = result.geometry.lat;
-//       const lon = result.geometry.lng; // Use `.lng` for longitude
+  // Base URL for the API
+  const API_BASE_URL = "https://json.astrologyapi.com/v1";
 
-//       console.log("Extracted Latitude:", lat, "Longitude:", lon); // Debug logs
-//       return { lat, lon }; // Return both lat and lon
-//     } else {
-//       throw new Error("Geocoding failed: No results found");
-//     }
-//   } catch (error) {
-//     console.error(`Geocoding API request failed: ${error.message}`);
-//     throw new Error(`Geocoding API request failed: ${error.message}`);
-//   }
-// }
+  try {
+    // Make the API request
+    const response = await axios.post(
+      `${API_BASE_URL}/${endpoint}`,
+      requestBody,
+      {
+        headers: {
+          Authorization: `Basic ${auth}`, // Authentication header
+          "Content-Type": "application/json", // JSON Content-Type header
+          "Accept-Language": language,
+        },
+      }
+    );
 
-// async function fetchAstrologyData(endpoint, requestBody) {
-//   const apiUsername = "635294"; // Your API Username
-//   const apiPassword = "034da42232b5b34a57b7e6e27e031473622744d4"; // Your API Password
-//   var language = 'hi' 
-//   // Combine username and password for Basic Authentication
-//   const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString("base64");
+    // Return the response data
+    return response.data;
+  } catch (error) {
+    // Log the error for debugging
+    console.error(
+      `Error fetching data from ${endpoint}:`,
+      error.response?.data || error.message
+    );
 
-//   // Base URL for the API
-//   const API_BASE_URL = "https://json.astrologyapi.com/v1";
+    // Return a simple error message
+    return { error: `Failed to fetch data from ${endpoint}` };
+  }
+}
 
-//   try {
-//     // Make the API request
-//     const response = await axios.post(`${API_BASE_URL}/${endpoint}`, requestBody, {
-//       headers: {
-//         Authorization: `Basic ${auth}`, // Authentication header
-//         "Content-Type": "application/json", // JSON Content-Type header
-//         "Accept-Language": language 
+userRoutes.post("/kundali", async (req, res) => {
+  const { address, datetime } = req.body;
 
-//       },
-//     });
+  if (!address || !datetime) {
+    return res
+      .status(400)
+      .json({ error: "Missing required parameters in request body." });
+  }
 
-//     // Return the response data
-//     return response.data;
-//   } catch (error) {
-//     // Log the error for debugging
-//     console.error(`Error fetching data from ${endpoint}:`, error.response?.data || error.message);
+  const tzone = 5.5; // Fixed timezone value
 
-//     // Return a simple error message
-//     return { error: `Failed to fetch data from ${endpoint}` };
-//   }
-// }
+  try {
+    // Parse datetime into components (day, month, year, hour, min)
+    const dateObject = new Date(datetime);
 
+    if (isNaN(dateObject.getTime())) {
+      return res.status(400).json({ error: "Invalid datetime format." });
+    }
 
-// userRoutes.post("/kundali", async (req, res) => {
-//   const { address, datetime } = req.body;
-  
+    const day = dateObject.getDate();
+    const month = dateObject.getMonth() + 1; // JavaScript months are zero-indexed
+    const year = dateObject.getFullYear();
+    const hour = dateObject.getHours();
+    const min = dateObject.getMinutes();
 
-//   if (!address || !datetime) {
-//     return res
-//       .status(400)
-//       .json({ error: "Missing required parameters in request body." });
-//   }
+    // Get lat-long from the address
+    const { lat, lon } = await getLatLon(address); // Ensure both are fetched
+    if (!lat || !lon) {
+      throw new Error("Failed to fetch latitude and longitude.");
+    }
 
-//   const tzone = 5.5; // Fixed timezone value
+    console.log("Latitude:", lat, "Longitude:", lon);
 
-//   try {
-//     // Parse datetime into components (day, month, year, hour, min)
-//     const dateObject = new Date(datetime);
+    // Construct the request body for API calls
+    const requestBody = { day, month, year, hour, min, lat, lon, tzone };
 
-//     if (isNaN(dateObject.getTime())) {
-//       return res.status(400).json({ error: "Invalid datetime format." });
-//     }
+    // Fetch data from all APIs
+    const [birthDetails, astroDetails, ayanamsha, manglik] = await Promise.all([
+      fetchAstrologyData("birth_details", requestBody),
+      fetchAstrologyData("astro_details", requestBody),
+      fetchAstrologyData("ayanamsha", requestBody),
 
-//     const day = dateObject.getDate();
-//     const month = dateObject.getMonth() + 1; // JavaScript months are zero-indexed
-//     const year = dateObject.getFullYear();
-//     const hour = dateObject.getHours();
-//     const min = dateObject.getMinutes();
+      fetchAstrologyData("manglik", requestBody),
+    ]);
 
-//     // Get lat-long from the address
-//     const { lat, lon } = await getLatLon(address); // Ensure both are fetched
-//     if (!lat || !lon) {
-//       throw new Error("Failed to fetch latitude and longitude.");
-//     }
+    const formattedAyanamsha = Object.keys(ayanamsha).map((key) => ({
+      ayanamsha,
+    }));
 
-//     console.log("Latitude:", lat, "Longitude:", lon);
+    // const response = {
+    //   title: "birth details",
 
-//     // Construct the request body for API calls
-//     const requestBody = { day, month, year, hour, min, lat, lon, tzone };
+    //   description: {
+    //     year: birthDetails.year,
+    //     month: birthDetails.month,
+    //     day: birthDetails.day,
+    //     hour: birthDetails.hour,
+    //     minute: birthDetails.minute,
+    //     latitude: lat,
+    //     longitude: lon,
+    //     timezone: tzone,
+    //     seconds: birthDetails.seconds || 0,
+    //     ayanamsha: birthDetails.ayanamsha,
+    //     sunrise: birthDetails.sunrise,
+    //     sunset: birthDetails.sunset,
+    //   },
+    //   title: "astroDetails",
 
-//     // Fetch data from all APIs
-//     const [birthDetails, astroDetails, ayanamsha, manglik] =
-//       await Promise.all([
-//         fetchAstrologyData("birth_details", requestBody),
-//         fetchAstrologyData("astro_details", requestBody),
-//         fetchAstrologyData("ayanamsha", requestBody),
-      
-//         fetchAstrologyData("manglik", requestBody),
-//       ]);
+    //   description: {
+    //     ascendant: astroDetails.ascendant,
+    //     ascendant_lord: astroDetails.ascendant_lord,
+    //     varna: astroDetails.varna,
+    //     vashya: astroDetails.vashya,
+    //     yoni: astroDetails.yoni,
+    //     gan: astroDetails.gan,
+    //     nadi: astroDetails.nadi,
+    //     signLord: astroDetails.signLord,
+    //     sign: astroDetails.sign,
+    //     nakshatra: astroDetails.nakshatra,
+    //     nakshatraLord: astroDetails.nakshatraLord,
+    //     charan: astroDetails.charan,
+    //     yog: astroDetails.yog,
+    //     karan: astroDetails.karan,
+    //     tithi: astroDetails.tithi,
+    //     yunja: astroDetails.yunja,
+    //     tatva: astroDetails.tatva,
+    //     nameAlphabet: astroDetails.nameAlphabet,
+    //     paya: astroDetails.paya,
+    //   },
 
+    //   title: "ayanamsha",
+    //   description: ayanamsha,
 
-//       const formattedAyanamsha = Object.keys(ayanamsha).map((key) => ({
-        
-//         ayanamsha
-      
-//       }));
-  
-//       const response = {
-//         birthDetails: {
-//           year: birthDetails.year,
-//           month: birthDetails.month,
-//           day: birthDetails.day,
-//           hour: birthDetails.hour,
-//           minute: birthDetails.minute,
-//           latitude: lat,
-//           longitude: lon,
-//           timezone: tzone,
-//           seconds: birthDetails.seconds || 0,
-//           ayanamsha: birthDetails.ayanamsha,
-//           sunrise: birthDetails.sunrise,
-//           sunset: birthDetails.sunset,
-//         },
-//         astroDetails: {
-//           ascendant: astroDetails.ascendant,
-//           ascendant_lord: astroDetails.ascendant_lord,
-//           varna: astroDetails.varna,
-//           vashya: astroDetails.vashya,
-//           yoni: astroDetails.yoni,
-//           gan: astroDetails.gan,
-//           nadi: astroDetails.nadi,
-//           signLord: astroDetails.signLord,
-//           sign: astroDetails.sign,
-//           nakshatra: astroDetails.nakshatra,
-//           nakshatraLord: astroDetails.nakshatraLord,
-//           charan: astroDetails.charan,
-//           yog: astroDetails.yog,
-//           karan: astroDetails.karan,
-//           tithi: astroDetails.tithi,
-//           yunja: astroDetails.yunja,
-//           tatva: astroDetails.tatva,
-//           nameAlphabet: astroDetails.nameAlphabet,
-//           paya: astroDetails.paya,
-//         },
-//        formattedAyanamsha,
-      
-//         manglik: {
-//           manglik_present_rule: {
-//             based_on_aspect: manglik.based_on_aspect || [],
-//             based_on_house: manglik.based_on_house || [],
-//           },
-//           manglik_cancel_rule: [],
-//           is_mars_manglik_cancelled: manglik.is_mars_manglik_cancelled,
-//           manglik_status: manglik.manglik_status,
-//           percentage_manglik_present: manglik.percentage_manglik_present,
-//           percentage_manglik_after_cancellation: manglik.percentage_manglik_present,
-//           manglik_report: manglik.manglik_report,
-//           is_present: manglik.is_present,
-//         },
-//       };
-  
-//       return res.json(response);
-  
+    //   title: "manglik",
+    //   description: {
+    //     manglik_present_rule: {
+    //       based_on_aspect: manglik.based_on_aspect || [],
+    //       based_on_house: manglik.based_on_house || [],
+    //     },
+    //     manglik_cancel_rule: [],
+    //     is_mars_manglik_cancelled: manglik.is_mars_manglik_cancelled,
+    //     manglik_status: manglik.manglik_status,
+    //     percentage_manglik_present: manglik.percentage_manglik_present,
+    //     percentage_manglik_after_cancellation:
+    //       manglik.percentage_manglik_present,
+    //     manglik_report: manglik.manglik_report,
+    //     is_present: manglik.is_present,
+    //   },
+    // };
 
-   
-//   } catch (error) {
-//     console.error("Error in /kundali route:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+    const response = {
+      birthDetails: {
+        title: "Birth Details",
+        description: {
+          year: birthDetails.year,
+          month: birthDetails.month,
+          day: birthDetails.day,
+          hour: birthDetails.hour,
+          minute: birthDetails.minute,
+          latitude: lat,
+          longitude: lon,
+          timezone: tzone,
+          seconds: birthDetails.seconds || 0,
+          ayanamsha: birthDetails.ayanamsha,
+          sunrise: birthDetails.sunrise,
+          sunset: birthDetails.sunset,
+        },
+      },
+      astroDetails: {
+        title: "Astro Details",
+        description: {
+          ascendant: astroDetails.ascendant,
+          ascendant_lord: astroDetails.ascendant_lord,
+          varna: astroDetails.varna,
+          vashya: astroDetails.vashya,
+          yoni: astroDetails.yoni,
+          gan: astroDetails.gan,
+          nadi: astroDetails.nadi,
+          signLord: astroDetails.signLord,
+          sign: astroDetails.sign,
+          nakshatra: astroDetails.nakshatra,
+          nakshatraLord: astroDetails.nakshatraLord,
+          charan: astroDetails.charan,
+          yog: astroDetails.yog,
+          karan: astroDetails.karan,
+          tithi: astroDetails.tithi,
+          yunja: astroDetails.yunja,
+          tatva: astroDetails.tatva,
+          nameAlphabet: astroDetails.nameAlphabet,
+          paya: astroDetails.paya,
+        },
+      },
+      ayanamsha: {
+        title: "Ayanamsha",
+        description: ayanamsha,
+      },
+      manglik: {
+        title: "Manglik Details",
+        description: {
+          manglik_present_rule: {
+            based_on_aspect: manglik.based_on_aspect || [],
+            based_on_house: manglik.based_on_house || [],
+          },
+          manglik_cancel_rule: [],
+          is_mars_manglik_cancelled: manglik.is_mars_manglik_cancelled,
+          manglik_status: manglik.manglik_status,
+          percentage_manglik_present: manglik.percentage_manglik_present,
+          percentage_manglik_after_cancellation:
+            manglik.percentage_manglik_present,
+          manglik_report: manglik.manglik_report,
+          is_present: manglik.is_present,
+        },
+      },
+    };
 
+    return res.json(response);
 
-
-
+    return res.json(response);
+  } catch (error) {
+    console.error("Error in /kundali route:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 export default userRoutes;
