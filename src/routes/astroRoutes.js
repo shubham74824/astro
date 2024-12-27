@@ -19,9 +19,9 @@ astroRoutes.get("/astro_profile", astrologerAuth, async (req, res) => {
       email: user.email || "",
       number: user.number,
       gender: user.gender || "",
-      experience: user.experience || "",
+      experience: user.experience || 0,
       city: user.city || "",
-      pricePerMin:user.pricePerMin||"",
+      pricePerMin:parseInt(user.pricePerMin)||0,
       shortBio: user.shortBio || "",
       profile:
         "https://i.ibb.co/y6WmwWX/Whats-App-Image-2024-12-26-at-22-58-30-38f19b5f.jpg",
