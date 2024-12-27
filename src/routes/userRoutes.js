@@ -700,25 +700,27 @@ userRoutes.post("/kundali", async (req, res) => {
     //   },
     // };
 
-    const response = {
-      birthDetails: {
-        title: "Birth Details",
-        description: {
-          year: birthDetails.year,
-          month: birthDetails.month,
-          day: birthDetails.day,
-          hour: birthDetails.hour,
-          minute: birthDetails.minute,
-          latitude: lat,
-          longitude: lon,
-          timezone: tzone,
-          seconds: birthDetails.seconds || 0,
-          ayanamsha: birthDetails.ayanamsha,
-          sunrise: birthDetails.sunrise,
-          sunset: birthDetails.sunset,
-        },
+    const response = [
+      {
+        
+          title: "Birth Details",
+          description: {
+            year: birthDetails.year,
+            month: birthDetails.month,
+            day: birthDetails.day,
+            hour: birthDetails.hour,
+            minute: birthDetails.minute,
+            latitude: lat,
+            longitude: lon,
+            timezone: tzone,
+            seconds: birthDetails.seconds || 0,
+            ayanamsha: birthDetails.ayanamsha,
+            sunrise: birthDetails.sunrise,
+            sunset: birthDetails.sunset,
+          },
+      
       },
-      astroDetails: {
+      {
         title: "Astro Details",
         description: {
           ascendant: astroDetails.ascendant,
@@ -740,13 +742,14 @@ userRoutes.post("/kundali", async (req, res) => {
           tatva: astroDetails.tatva,
           nameAlphabet: astroDetails.nameAlphabet,
           paya: astroDetails.paya,
-        },
+        }
       },
-      ayanamsha: {
-        title: "Ayanamsha",
+
+      {
+       title: "Ayanamsha",
         description: ayanamsha,
-      },
-      manglik: {
+      } ,
+      {
         title: "Manglik Details",
         description: {
           manglik_present_rule: {
@@ -762,12 +765,16 @@ userRoutes.post("/kundali", async (req, res) => {
           manglik_report: manglik.manglik_report,
           is_present: manglik.is_present,
         },
-      },
-    };
+      }
+      
+      
+     
+      
+    ];
 
     return res.json(response);
 
-    return res.json(response);
+    
   } catch (error) {
     console.error("Error in /kundali route:", error);
     res.status(500).json({ error: "Internal Server Error" });
